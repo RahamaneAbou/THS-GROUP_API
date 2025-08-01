@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "formations")
+@Table(name = "formations_thsgroup")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Formation {
 

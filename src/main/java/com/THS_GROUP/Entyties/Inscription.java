@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "inscriptions")
+@Table(name = "inscriptions_thsgroup")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Inscription {
 
