@@ -40,7 +40,7 @@ public class EnseignantService {
     }
 
     // Find all enseignants teaching a specific course
-    public List<Enseignant> findEnseignantsByCoursId(Long coursId) {
+    /* public List<Enseignant> findEnseignantsByCoursId(Long coursId) {
         return enseignantRepository.findByCoursId(coursId);
     }
 

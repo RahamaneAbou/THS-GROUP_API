@@ -1,6 +1,7 @@
 package com.THS_GROUP.Services;
 
 import com.THS_GROUP.Entyties.Etudiant;
+import com.THS_GROUP.Entyties.StatusInscription;
 import com.THS_GROUP.Repository.EtudiantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,5 +54,15 @@ public class EtudiantService {
     // Rechercher un étudiant par nom et prénom
     public Optional<Etudiant> findByNomAndPrenom(String nom, String prenom) {
         return etudiantRepository.findByNomAndPrenom(nom, prenom);
+    }
+
+    public List<Etudiant> findByStatus(String status) {
+        try {
+            StatusInscription enumStatus = StatusInscription.valueOf(status.toUpperCase());
+            return etudiantRepository.findByStatusInscription(enumStatus);
+        } catch (IllegalArgumentException e) {
+            // Si le statut n'est pas valide (ex: "INVALIDE"), on retourne une liste vide
+            return List.of();
+        }
     }
 }

@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.Date;
-
+import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Data
@@ -13,24 +13,35 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @AllArgsConstructor
 @Entity
 @Table(name = "notes")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Note {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "etudiant_id", nullable = false)
-    @JsonIgnoreProperties({"notes", "formation"}) 
-    private Etudiant etudiant; // Étudiant associé à la note
-
-    @ManyToOne
-    @JoinColumn(name = "cours_id", nullable = false)
-    @JsonIgnoreProperties({"notes", "enseignant"}) 
-    private Cours cours; // Cours associé à la note
-
     @Column(nullable = false)
-    private double valeur; // Valeur de la note (ex. 15.5)
+    private Double valeur;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date DateAttribution; // Date d'attribution de la note
+    @Column(name = "date_attribution")
+    private LocalDateTime DateAttribution;
+
+    // Relation avec Etudiant
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "etudiant_id", nullable = false)
+    @JsonBackReference("etudiant-notes")
+    private Etudiant etudiant;
+
+    // Relation avec Cours
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cours_id", nullable = false)
+    @JsonIgnoreProperties({"notes", "formation"})
+    private Cours cours;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.DateAttribution == null) {
+            this.DateAttribution = LocalDateTime.now();
+        }
+    }
 }

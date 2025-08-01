@@ -28,6 +28,6 @@ public interface InscriptionRepository extends JpaRepository<Inscription, Long>{
     @Modifying
     @Query("UPDATE Inscription i SET i.status = :status, i.dateConfirmation = :dateConfirmation WHERE i.id = :id")
     void updateStatusById(Long id, 
-                          StatusInscription status, 
+                          StatusInscription status,
                            Date dateConfirmation);
 }

@@ -11,6 +11,6 @@ import java.util.List;
 public interface EnseignantRepository extends JpaRepository<Enseignant, Long> {
     Optional<Enseignant> findById(Long id);
     Optional<Enseignant> findByNumMatricule(String numMatricule);
-    List<Enseignant> findByCoursId(Long coursId); // Find all enseignants teaching a specific course
+   // List<Enseignant> findByCoursId(Long coursId); // Find all enseignants teaching a specific course
    // List<Enseignant> findByFormationId(Long formationId); // Find all enseignants responsible for a specific formation
 }

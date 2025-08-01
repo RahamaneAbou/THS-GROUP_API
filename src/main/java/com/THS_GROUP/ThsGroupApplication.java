@@ -6,17 +6,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.THS_GROUP.Entyties.Etudiant;
-import com.THS_GROUP.Entyties.Formation;
-import com.THS_GROUP.Entyties.Inscription;
-import com.THS_GROUP.Entyties.Personnels;
-import com.THS_GROUP.Entyties.StatusInscription;
 import com.THS_GROUP.Services.EtudiantService;
 import com.THS_GROUP.Services.FormationService;
 import com.THS_GROUP.Services.InscriptionService;
 import com.THS_GROUP.Services.PersonnelService;
-
-import java.util.Date;
 
 @SpringBootApplication
 public class ThsGroupApplication implements CommandLineRunner {

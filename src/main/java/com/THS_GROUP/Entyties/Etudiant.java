@@ -4,24 +4,22 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "etudiants")
-public class Etudiant {
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class    Etudiant {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = true, unique = true, length = 50)
-    private String numMatricule;
 
     @Column(nullable = false)
     private String nom;
@@ -29,31 +27,53 @@ public class Etudiant {
     @Column(nullable = false)
     private String prenom;
 
-    @Column(nullable = false)
-    private int age;
-
-    @Column(nullable = false, unique = false)
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    private Integer age;
+
+    @Column(name = "numero_telephone")
     private String numeroTelephone;
 
-    @ManyToOne
-    @JoinColumn(name = "formation_id", nullable = false)
-    @JsonIgnoreProperties("etudiants") // Ignorer la liste des étudiants dans Formation
-    private Formation formation;
+    @Column(name = "num_matricule", unique = true)
+    private String numMatricule;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private StatusInscription statusInscription;
+    @Column(name = "status_inscription")
+    private StatusInscription statusInscription = StatusInscription.EN_ATTENTE;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dateInscription;
+    @Column(name = "date_inscription")
+    private LocalDateTime dateInscription;
 
-    @OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonIgnoreProperties("etudiant") // Ignorer l'étudiant dans Note
+    // Relation avec Formation - Éviter la boucle infinie
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "formation_id")
+    @JsonIgnoreProperties({"etudiants", "coursList", "inscriptions"})
+    private Formation formation;
+
+    // Relation avec Notes - Utiliser JsonManagedReference
+    @OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("etudiant-notes")
     private List<Note> notes;
 
-    @Version // Gère la concurrence optimiste
-    private Integer version;
+    // Relation avec Inscriptions
+    @OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("etudiant-inscriptions")
+    private List<Inscription> inscriptions;
+
+    // Méthode utilitaire pour générer le matricule
+    @PrePersist
+    public void generateMatricule() {
+        if (this.numMatricule == null) {
+            this.numMatricule = "ETU" + System.currentTimeMillis();
+        }
+        if (this.dateInscription == null) {
+            this.dateInscription = LocalDateTime.now();
+        }
+    }
 }
+
+/*enum StatusInscription {
+    EN_ATTENTE, COMFIMER, REFUSER
+}
+*/

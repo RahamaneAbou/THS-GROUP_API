@@ -5,14 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "enseignants")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Enseignant {
 
     @Id
@@ -20,28 +21,39 @@ public class Enseignant {
     private Long id;
 
     @Column(nullable = false)
-    private String nom; // Nom complet de l'enseignant
-    
-    @Column(nullable = true)
-    private String prenom; // Nom complet de l'enseignant
-
-    @Column(nullable = false, unique = true)
-    private String email; // Email de l'enseignant
+    private String nom;
 
     @Column(nullable = false)
-    private String numeroTelephone; // Numéro de téléphone de l'enseignant
-    
-    @Column(nullable=true, unique=true, length=50)
- 	private String numMatricule;
+    private String prenom;
 
-    @OneToMany(mappedBy = "enseignantId", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("enseignant") 
-    private List<Cours> cours; // Liste des cours enseignés par cet enseignant
-    
-   // @OneToMany(mappedBy = "enseignantId", cascade = CascadeType.ALL, orphanRemoval = true)
-  //  @JsonIgnoreProperties("enseignant") 
-   // private List<Formation> formation; // Liste des cours enseignés par cet enseignant
+    @Column(unique = true, nullable = false)
+    private String email;
 
-    @Version // Ajoutez ce champ pour gérer la concurrence optimiste
-    private Integer version;
+    @Column(name = "numero_telephone")
+    private String numeroTelephone;
+
+    @Column(name = "num_matricule", unique = true)
+    private String numMatricule;
+
+    // Relations avec Formation (responsable)
+    @OneToMany(mappedBy = "responsable", fetch = FetchType.LAZY)
+    @JsonBackReference("enseignant-formations-responsable")
+    private List<Formation> formationsResponsable;
+
+    // Relations avec Formation (enseignant)
+    @OneToMany(mappedBy = "enseignantId", fetch = FetchType.LAZY)
+    @JsonBackReference("enseignant-formations")
+    private List<Formation> formations;
+
+    // Ne pas inclure la relation bidirectionnelle avec Cours pour éviter les boucles
+    // Utiliser des requêtes séparées si nécessaire
+    @Transient
+    private List<Cours> coursList;
+
+    @PrePersist
+    public void generateMatricule() {
+        if (this.numMatricule == null) {
+            this.numMatricule = "ENS" + System.currentTimeMillis();
+        }
+    }
 }

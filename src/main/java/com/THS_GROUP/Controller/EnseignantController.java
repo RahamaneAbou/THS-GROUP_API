@@ -77,12 +77,12 @@ public class EnseignantController {
      * @param coursId Course ID.
      * @return List of enseignants teaching the specified course.
      */
-    @GetMapping("/cours/{coursId}")
+   /* @GetMapping("/cours/{coursId}")
     public ResponseEntity<List<Enseignant>> findEnseignantsByCoursId(@PathVariable("coursId") Long coursId) {
         List<Enseignant> enseignants = enseignantService.findEnseignantsByCoursId(coursId);
         System.out.println("Une liste des enseignant a été demander via l'ID d'un cour");
         return ResponseEntity.ok(enseignants);
-    }
+    }*/
     
     /**
      * Find all enseignants responsible for a specific formation.
