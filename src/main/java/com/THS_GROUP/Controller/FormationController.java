@@ -11,7 +11,10 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/THS-GROUP/formations")
-@CrossOrigin(origins = "*")
+@CrossOrigin(
+        origins = {"https://ths-group-front-end.onrender.com","http://localhost:5173", "http://127.0.0.1:5173", "https://ton-site.com"},
+        allowCredentials = "true"
+)
 public class FormationController {
 
     @Autowired

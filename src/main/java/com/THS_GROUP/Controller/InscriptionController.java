@@ -13,7 +13,11 @@ import java.util.List;
 import java.util.Optional;
 
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = {"https://ths-group-front-end.onrender.com","http://localhost:5173", "http://localhost:3000"},
+methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
+          RequestMethod.DELETE, RequestMethod.OPTIONS},
+allowedHeaders = "*",
+maxAge = 3600)
 @RestController
 @RequestMapping("/THS-GROUP/inscriptions")
 public class InscriptionController {
